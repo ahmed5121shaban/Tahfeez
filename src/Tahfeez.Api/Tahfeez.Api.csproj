@@ -13,8 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\User\" />
-    <Folder Include="Middleware\" />
+    <ProjectReference Include="..\Tahfeez.Application\Tahfeez.Application.csproj" />
+    <ProjectReference Include="..\Tahfeez.Infrastracture\Tahfeez.Infrastracture.csproj" />
+    <ProjectReference Include="..\Tahfeez.Domain\Tahfeez.Domain.csproj" />
   </ItemGroup>
-  
+
 </Project>
