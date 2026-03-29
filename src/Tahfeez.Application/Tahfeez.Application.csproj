@@ -6,4 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\User\Commands\" />
+    <Folder Include="Features\User\" />
+    <Folder Include="Features\User\Queries\" />
+    <Folder Include="Interfaces\User\" />
+  </ItemGroup>
+
 </Project>
