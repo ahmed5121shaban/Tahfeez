@@ -1,7 +1,7 @@
 using MediatR;
 using Tahfeez.Domain.Repositories;
 using Tahfeez.SharedKernal.Common;
-
+using Tahfeez.Domain.Entities.Users;
 namespace Tahfeez.Application.Features.User.Commands.CreateUser;
 
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<Guid>>
@@ -24,7 +24,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
         // TODO: Hash password properly
         var passwordHash = request.Password;
 
-        var user = Domain.Entities.User.User.Create(request.FullName, request.Email, passwordHash);
+        var user =new Tahfeez.Domain.Entities.Users.User { };
 
         await _userRepository.AddAsync(user, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

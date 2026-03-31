@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Tahfeez.SharedKernal\Tahfeez.SharedKernal.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\User\" />
+  </ItemGroup>
+
 </Project>

@@ -1,14 +1,10 @@
+using Tahfeez.SharedKernal.Interfaces;
+
 namespace Tahfeez.SharedKernal.Common;
 
-public abstract class AuditableEntity : BaseEntity
+public abstract class AuditableEntity : BaseEntity ,ISoftDeletable
 {
-    public string CreatedBy { get; set; } = string.Empty;
+    public string? CreatedBy { get; set; }
     public string? UpdatedBy { get; set; }
-    public bool IsDeleted { get; protected set; }
-
-    public void SoftDelete()
-    {
-        IsDeleted = true;
-        UpdatedAt = DateTime.UtcNow;
-    }
+    public bool IsDeleted { get; set; }
 }

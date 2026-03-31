@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Tahfeez.Application.Behaviors
+namespace Tahfeez.Infrastracture.Persistence.Seeders
 {
-    public class TransactionBehavior
+    public class RolesSeeder
     {
     }
 }

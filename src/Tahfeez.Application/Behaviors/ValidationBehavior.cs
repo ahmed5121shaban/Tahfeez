@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Tahfeez.Application.Behaviors
 {
-    internal class ValidationBehavior
+    public class ValidationBehavior
     {
     }
 }

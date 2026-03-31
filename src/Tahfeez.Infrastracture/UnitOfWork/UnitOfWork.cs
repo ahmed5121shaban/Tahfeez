@@ -1,6 +1,6 @@
 using Tahfeez.Domain.Repositories;
 
-namespace Tahfeez.Infrastracture.UnitOfWork;
+namespace Tahfeez.Infrastracture;
 
 public class UnitOfWork : IUnitOfWork
 {

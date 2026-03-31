@@ -21,7 +21,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
         if (user is null)
             return Result.Failure($"User with id '{request.UserId}' was not found.");
 
-        user.Update(request.FullName, request.Email);
+        //user.Update(request.FullName, request.Email);
 
         await _userRepository.UpdateAsync(user, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

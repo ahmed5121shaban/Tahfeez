@@ -17,7 +17,7 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
     {
         var users = await _userRepository.GetAllAsync(cancellationToken);
 
-        var dtos = users.Select(u => new UserListItemDto(u.Id, u.FullName, u.Email, u.CreatedAt));
+        var dtos = users.Select(u => new UserListItemDto(u.Id, FullName:"", Email:"FullName", u.CreatedAt));
         return Result.Success(dtos);
     }
 }

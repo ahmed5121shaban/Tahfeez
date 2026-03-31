@@ -1,4 +1,4 @@
-using Tahfeez.Domain.Entities.User;
+using Tahfeez.Domain.Entities.Users;
 using Tahfeez.Domain.Repositories;
 
 namespace Tahfeez.Infrastracture.Repositories;
