@@ -16,6 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Auth\Queries\" />
+    <Folder Include="Interfaces\Auth\" />
     <Folder Include="Interfaces\User\" />
   </ItemGroup>
 

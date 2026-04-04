@@ -2,7 +2,5 @@ namespace Tahfeez.Domain.Enums;
 
 public enum UserRole
 {
-    Student = 0,
-    Teacher = 1,
-    Admin = 2
+    Admin = 0, Teacher, Student, Parent, Accountant, Supervisor, Receptionist, Manager, Examiner
 }
