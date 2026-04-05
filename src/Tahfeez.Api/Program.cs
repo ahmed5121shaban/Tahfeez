@@ -10,6 +10,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Register the database
 builder.AddDatabaseConfig(connectionString);
 
+// Register OpenIddict
+builder.AddOpenIddictConfig();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
