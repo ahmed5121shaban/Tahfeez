@@ -2,7 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Text.Json.Serialization;
 using Tahfeez.Api.Extentions;
+using Tahfeez.Application;
+using Tahfeez.Infrastracture;
 using Tahfeez.Infrastracture.Persistence;
+using Tahfeez.Infrastracture.Persistence.Seeders;
 
 // Bootstrap logger for startup errors (before config/DI is built)
 Log.Logger = new LoggerConfiguration()
@@ -25,8 +28,14 @@ try
     // Register the database
     builder.AddDatabaseConfig(connectionString);
 
-    // Register OpenIddict
+    // Register Infrastructure (Identity + repos + seeders) — must be before OpenIddict
+    builder.Services.AddInfrastructure();
+
+    // Register OpenIddict (after Identity)
     builder.AddOpenIddictConfig();
+
+    // Register Application (MediatR)
+    builder.Services.AddApplication();
 
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi();
@@ -34,6 +43,15 @@ try
     builder.Services.AddControllers();
 
     var app = builder.Build();
+
+    // Seed the database on startup
+    await using (var scope = app.Services.CreateAsyncScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await db.Database.EnsureCreatedAsync();
+    }
+    var seeder = app.Services.GetRequiredService<DatabaseSeeder>();
+    await seeder.SeedAsync();
 
     if (app.Environment.IsDevelopment())
     {

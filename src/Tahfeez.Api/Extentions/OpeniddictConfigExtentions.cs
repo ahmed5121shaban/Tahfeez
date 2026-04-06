@@ -1,4 +1,4 @@
-﻿using Tahfeez.Infrastracture.Persistence;
+using Tahfeez.Infrastracture.Persistence;
 
 namespace Tahfeez.Api.Extentions
 {
@@ -15,6 +15,7 @@ namespace Tahfeez.Api.Extentions
                 .AddServer(options =>
                 {
                     // flows
+                    options.AllowPasswordFlow();
                     options.AllowRefreshTokenFlow();
                     options.AllowAuthorizationCodeFlow();
                     options.AllowClientCredentialsFlow();
