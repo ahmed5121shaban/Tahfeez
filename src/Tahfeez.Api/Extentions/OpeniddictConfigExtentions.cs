@@ -25,6 +25,7 @@ namespace Tahfeez.Api.Extentions
                     options.SetIntrospectionEndpointUris("/connect/introspect");
                     options.SetRevocationEndpointUris("/connect/revoke");
                     options.SetUserInfoEndpointUris("/connect/userinfo");
+                    options.SetAuthorizationEndpointUris("/connect/authorization");
 
                     // token lifetimes
                     options.SetAccessTokenLifetime(TimeSpan.FromMinutes(15));

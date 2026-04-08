@@ -28,6 +28,9 @@ try
     // Register the database
     builder.AddDatabaseConfig(connectionString);
 
+    // Register services
+    builder.AddDiContainer();
+
     // Register Infrastructure (Identity + repos + seeders) — must be before OpenIddict
     builder.Services.AddInfrastructure();
 
