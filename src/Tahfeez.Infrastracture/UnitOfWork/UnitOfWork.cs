@@ -1,11 +1,18 @@
 using Tahfeez.Domain.Repositories;
+using Tahfeez.Infrastracture.Persistence;
 
 namespace Tahfeez.Infrastracture;
 
 public class UnitOfWork : IUnitOfWork
 {
-    // TODO: Inject DbContext and implement
-    
+    private readonly AppDbContext _context;
+    public UnitOfWork(AppDbContext context)
+    {
+        _context = context;
+    }
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        => throw new NotImplementedException();
+        => _context.SaveChangesAsync();
+
+    public int SaveChanges(CancellationToken cancellationToken = default)
+        => _context.SaveChanges();
 }

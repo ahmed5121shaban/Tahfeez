@@ -1,4 +1,5 @@
 using MediatR;
+using Tahfeez.Application.Features.User.DTOs;
 using Tahfeez.Domain.Repositories;
 using Tahfeez.SharedKernal.Common;
 
@@ -13,11 +14,11 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
         _userRepository = userRepository;
     }
 
-    public async Task<Result<IEnumerable<UserListItemDto>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<UserListItemDto>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken = default)
     {
-        var users = await _userRepository.GetAllAsync(cancellationToken);
+        var users = await _userRepository.GetAllAsync(isDeleted:false, cancellationToken);
 
-        var dtos = users.Select(u => new UserListItemDto(u.Id, FullName:"", Email:"FullName", u.CreatedAt));
+        var dtos = users.Select(u => new UserListItemDto(u.Id, FullName:u.UserName, Email:u.Email, u.CreatedAt));
         return Result.Success(dtos);
     }
 }
