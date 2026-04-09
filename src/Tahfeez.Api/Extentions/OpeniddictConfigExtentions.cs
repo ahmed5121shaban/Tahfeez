@@ -37,6 +37,9 @@ namespace Tahfeez.Api.Extentions
                     options.UseAspNetCore()
                            .EnableTokenEndpointPassthrough()
                            .EnableUserInfoEndpointPassthrough();
+
+                    // disable the encryption of the jwe => jwt to improve the performance
+                    options.DisableAccessTokenEncryption();
                 })
                 .AddValidation(options =>
                 {

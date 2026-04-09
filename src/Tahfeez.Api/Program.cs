@@ -16,7 +16,7 @@ try
 {
     Log.Information("Starting Tahfeez API...");
 
-    var builder = WebApplication.CreateSlimBuilder(args);
+    var builder = WebApplication.CreateBuilder(args);
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
     // Configure Serilog from appsettings.json
