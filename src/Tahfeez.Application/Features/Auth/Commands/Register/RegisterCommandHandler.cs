@@ -1,8 +1,10 @@
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using AppUser = Tahfeez.Domain.Entities.Users.User;
+using System.ComponentModel.DataAnnotations;
 using Tahfeez.SharedKernal.Common;
+using AppUser = Tahfeez.Domain.Entities.Users.User;
 
 namespace Tahfeez.Application.Features.Auth.Commands.Register
 {
@@ -10,15 +12,20 @@ namespace Tahfeez.Application.Features.Auth.Commands.Register
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<RegisterCommandHandler> _logger;
+        private readonly IValidator<RegisterCommand> _validator;
 
-        public RegisterCommandHandler(UserManager<AppUser> userManager, ILogger<RegisterCommandHandler> logger)
+        public RegisterCommandHandler(UserManager<AppUser> userManager, ILogger<RegisterCommandHandler> logger, IValidator<RegisterCommand> validator)
         {
             _userManager = userManager;
             _logger = logger;
+            _validator = validator;
         }
 
         public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken = default)
         {
+            var valid = await _validator.ValidateAsync(request);
+            if (!valid.IsValid) return Result.Failure("validation error",valid.Errors.Select(e => e.ErrorMessage));
+
             var existing = await _userManager.FindByEmailAsync(request.Email);
             if (existing is not null)
                 return Result.Failure("Email is already registered.");

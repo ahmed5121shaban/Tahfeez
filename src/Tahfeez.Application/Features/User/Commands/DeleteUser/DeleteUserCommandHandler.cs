@@ -16,13 +16,15 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Resul
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteUserCommand request, CancellationToken cancellationToken = default)
     {
         var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
         if (user is null)
             return Result.Failure($"User with id '{request.UserId}' was not found.");
 
-        await _userRepository.DeleteAsync(request.UserId, cancellationToken);
+        // soft delete
+        user.IsDeleted = true;
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();

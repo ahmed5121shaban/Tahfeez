@@ -1,9 +1,12 @@
+using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Validation.AspNetCore;
 using Serilog;
 using System.Text.Json.Serialization;
 using Tahfeez.Api.Extentions;
 using Tahfeez.Application;
+using Tahfeez.Application.Features.Auth.Validators.Register;
 using Tahfeez.Infrastracture;
 using Tahfeez.Infrastracture.Persistence;
 using Tahfeez.Infrastracture.Persistence.Seeders;
@@ -25,6 +28,8 @@ try
         configuration.ReadFrom.Configuration(context.Configuration)
                      .ReadFrom.Services(services)
                      .Enrich.FromLogContext());
+
+    builder.Services.AddValidatorsFromAssemblyContaining(typeof(RegisterCommandValidator));
 
     // Register the database
     builder.AddDatabaseConfig(connectionString);

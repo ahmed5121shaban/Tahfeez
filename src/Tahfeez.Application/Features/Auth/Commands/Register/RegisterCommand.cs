@@ -12,6 +12,7 @@ namespace Tahfeez.Application.Features.Auth.Commands.Register
     (
         string UserName,
         string Password,
+        string ConfirmPassword,
         string Email,
         UserRole Role
     ) : IRequest<Result>;

@@ -6,7 +6,7 @@ using Tahfeez.Domain.Enums;
 namespace Tahfeez.Api.Controllers.Auth;
 
 [ApiController]
-[Route("api/auth")]
+[Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -23,26 +23,20 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    public async Task<IActionResult> Register([FromBody] RegisterCommand request)
     {
         var command = new RegisterCommand(
             request.UserName,
             request.Password,
+            request.ConfirmPassword,
             request.Email,
             request.Role);
 
         var result = await _mediator.Send(command);
 
         if (result.IsFailure)
-            return BadRequest(new { error = result.Error });
+            return BadRequest(result);
 
         return StatusCode(StatusCodes.Status201Created);
     }
 }
-
-// ── Request DTO ──────────────────────────────────────────────────────────────
-public sealed record RegisterRequest(
-    string UserName,
-    string Email,
-    string Password,
-    UserRole Role = UserRole.Student);

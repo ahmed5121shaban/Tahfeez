@@ -1,4 +1,4 @@
-namespace Tahfeez.Application.Features.User.Queries.GetUserById;
+namespace Tahfeez.Application.Features.User.DTOs;
 
 public record UserDto(
     Guid Id,

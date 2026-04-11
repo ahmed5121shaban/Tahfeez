@@ -14,6 +14,7 @@ using AppUser = Tahfeez.Domain.Entities.Users.User;
 namespace Tahfeez.Api.Controllers.Auth;
 
 [ApiController]
+[Route("[controller]")]
 public class ConnectController : ControllerBase
 {
     private readonly TokenHelper _tokenHelper;
@@ -27,7 +28,7 @@ public class ConnectController : ControllerBase
     /// Token endpoint — handles password and refresh_token grants.
     /// POST /connect/token
     /// </summary>
-    [HttpPost("/connect/token")]
+    [HttpPost("token")]
     [Consumes("application/x-www-form-urlencoded")]
     public async Task<IActionResult> Token()
     {

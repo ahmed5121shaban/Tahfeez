@@ -24,7 +24,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
         // TODO: Hash password properly
         var passwordHash = request.Password;
 
-        var user =new Tahfeez.Domain.Entities.Users.User { };
+        var user =new Domain.Entities.Users.User();
 
         await _userRepository.AddAsync(user, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -1,4 +1,5 @@
 using MediatR;
+using Tahfeez.Application.Features.User.DTOs;
 using Tahfeez.Domain.Repositories;
 using Tahfeez.SharedKernal.Common;
 
@@ -19,7 +20,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
         if (user is null)
             return Result.Failure<UserDto>($"User with id '{request.UserId}' was not found.");
 
-        var dto = new UserDto(user.Id, FullName:"", Email: "", user.CreatedAt, user.UpdatedAt);
+        var dto = new UserDto(user.Id, FullName: user.UserName, Email: user.Email, user.CreatedAt, user.UpdatedAt);
         return Result.Success(dto);
     }
 }
