@@ -1,9 +1,7 @@
 using FluentValidation;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Validation.AspNetCore;
 using Serilog;
-using System.Text.Json.Serialization;
 using Tahfeez.Api.Extentions;
 using Tahfeez.Application;
 using Tahfeez.Application.Features.Auth.Validators.Register;
@@ -56,7 +54,7 @@ try
         options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
     });
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers().AddNewtonsoftJson();
 
     var app = builder.Build();
 

@@ -15,8 +15,10 @@ public class UserRepository : IUserRepository
         _context = context;
         _userContext = _context.Users;
     }
-    public Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-        => throw new NotImplementedException();
+    public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _userContext.FirstOrDefaultAsync(u => u.Id == id);
+    }
 
     public Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
         => throw new NotImplementedException();

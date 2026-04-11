@@ -1,5 +1,4 @@
 using MediatR;
-using Tahfeez.Domain.Exceptions;
 using Tahfeez.Domain.Repositories;
 using Tahfeez.SharedKernal.Common;
 

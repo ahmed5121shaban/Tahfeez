@@ -2,7 +2,6 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
 using Tahfeez.SharedKernal.Common;
 using AppUser = Tahfeez.Domain.Entities.Users.User;
 

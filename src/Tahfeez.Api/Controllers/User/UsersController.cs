@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Tahfeez.Application.Features.User.Commands.DeleteUser;
 using Tahfeez.Application.Features.User.Commands.UpdateUser;
@@ -32,26 +33,31 @@ public class UsersController : ControllerBase
     }
 
     [Authorize(Roles = Roles.Admin)]
-    [HttpDelete]
-    public async Task<IActionResult> DeleteUser([FromQuery] Guid id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
     {
         var result = await _mediator.Send(new DeleteUserCommand(id));
         return NoContent();
     }
 
     [Authorize(Roles = Roles.Admin)]
-    [HttpDelete]
-    public async Task<IActionResult> GetUserById([FromQuery] Guid id)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetUserById([FromRoute] Guid id)
     {
         var result = await _mediator.Send(new GetUserByIdQuery(id));
         return Ok(result);
     }
 
     [Authorize(Roles = Roles.Admin)]
-    [HttpPut]
-    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto data)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateUser([FromRoute] Guid id,[FromBody] JsonPatchDocument<UpdateUserDto> patchDoc)
     {
-        var result = await _mediator.Send(new UpdateUserCommand(data));
-        return CreatedAtAction(nameof(GetUserById), new { data.id }, result);
+        if (patchDoc is null)
+            return BadRequest();
+
+        var result = await _mediator.Send(new UpdateUserCommand(id, patchDoc));
+        if(result.IsFailure)
+            return NotFound(result.Error);
+        return Ok(result);
     }
 }

@@ -10,6 +10,7 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="Mapster" Version="10.0.7" />
     <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,7 +22,6 @@
     <Folder Include="Features\Auth\DTOs\" />
     <Folder Include="Features\Auth\Queries\" />
     <Folder Include="Features\Auth\Validators\Login\" />
-    <Folder Include="Features\User\Validators\" />
     <Folder Include="Interfaces\Auth\" />
     <Folder Include="Interfaces\User\" />
   </ItemGroup>
