@@ -49,7 +49,7 @@ public class UsersController : ControllerBase
     }
 
     [Authorize(Roles = Roles.Admin)]
-    [HttpPut("{id:guid}")]
+    [HttpPatch("{id:guid}")]
     public async Task<IActionResult> UpdateUser([FromRoute] Guid id,[FromBody] JsonPatchDocument<UpdateUserDto> patchDoc)
     {
         if (patchDoc is null)
