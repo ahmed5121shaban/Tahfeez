@@ -49,15 +49,14 @@ public class UsersController : ControllerBase
     }
 
     [Authorize(Roles = Roles.Admin)]
-    [HttpPatch("{id:guid}")]
-    public async Task<IActionResult> UpdateUser([FromRoute] Guid id,[FromBody] JsonPatchDocument<UpdateUserDto> patchDoc)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateUser([FromRoute] Guid id,[FromBody] UpdateUserDto userDto)
     {
-        if (patchDoc is null)
-            return BadRequest();
+        var result = await _mediator.Send(new UpdateUserCommand(id, userDto));
 
-        var result = await _mediator.Send(new UpdateUserCommand(id, patchDoc));
         if(result.IsFailure)
             return NotFound(result.Error);
+
         return Ok(result);
     }
 }

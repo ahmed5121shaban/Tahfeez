@@ -18,23 +18,19 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
-        _validator = validator; 
+        _validator = validator;
     }
 
     public async Task<Result> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
+        var validation = await _validator.ValidateAsync(request.userDto, cancellationToken);
+        if (!validation.IsValid) return Result.Failure("validation error", validation.Errors.Select(e => e.ErrorMessage));
+
         var user = await _userRepository.GetByIdAsync(request.id, cancellationToken);
         if (user is null)
             return Result.Failure($"User with id '{request.id}' was not found.");
 
-        var adaptedUser = user.Adapt<UpdateUserDto>();
-        request.patchDoc.ApplyTo(adaptedUser);
-
-        var valid = await _validator.ValidateAsync(adaptedUser, cancellationToken);
-        if (!valid.IsValid)
-            return Result.Failure("Validation failed.", valid.Errors.Select(e => e.ErrorMessage));
-        
-        adaptedUser.Adapt(user);
+        user.Adapt<UpdateUserDto>();
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success<UserDto>(user.Adapt<UserDto>());

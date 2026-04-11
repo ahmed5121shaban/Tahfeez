@@ -5,4 +5,4 @@ using Tahfeez.SharedKernal.Common;
 
 namespace Tahfeez.Application.Features.User.Commands.UpdateUser;
 
-public record UpdateUserCommand(Guid id, JsonPatchDocument<UpdateUserDto> patchDoc) : IRequest<Result>;
+public record UpdateUserCommand(Guid id, UpdateUserDto userDto) : IRequest<Result>;
