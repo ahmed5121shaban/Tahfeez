@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Tahfeez.Application.Features.User.Commands.DeleteUser;
+using Tahfeez.Application.Features.User.Commands.UpdateUser;
 using Tahfeez.Application.Features.User.DTOs;
 using Tahfeez.Application.Features.User.Queries.GetAllUsers;
 using Tahfeez.Application.Features.User.Queries.GetUserById;
@@ -47,10 +48,10 @@ public class UsersController : ControllerBase
     }
 
     [Authorize(Roles = Roles.Admin)]
-    [HttpDelete]
+    [HttpPut]
     public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto data)
     {
-        var result = await _mediator.Send(new GetUserByIdQuery(data));
-        return CreatedAtAction( nameof (GetUserById));
+        var result = await _mediator.Send(new UpdateUserCommand(data));
+        return CreatedAtAction(nameof(GetUserById), new { data.id }, result);
     }
 }
