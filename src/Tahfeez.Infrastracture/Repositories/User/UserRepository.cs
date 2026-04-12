@@ -16,27 +16,16 @@ public class UserRepository : IUserRepository
         _userContext = _context.Users;
     }
     public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        return await _userContext.FirstOrDefaultAsync(u => u.Id == id);
-    }
+    => await _userContext.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
-    public Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
-        => throw new NotImplementedException();
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+    => await _userContext.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
 
     public async Task<IEnumerable<User>> GetAllAsync(bool isDeleted = false, CancellationToken cancellationToken = default)
-    {
-        return await _userContext.AsNoTracking().Where(u => u.IsDeleted == isDeleted).ToListAsync();
-    }
+    => await _userContext.AsNoTracking().Where(u => u.IsDeleted == isDeleted).ToListAsync();
+    
+    public async Task AddAsync(User user, CancellationToken cancellationToken = default)
+    => await _userContext.AddAsync(user);
+    
 
-    public Task AddAsync(User user, CancellationToken cancellationToken = default)
-        => throw new NotImplementedException();
-
-    public Task UpdateAsync(User user, CancellationToken cancellationToken = default)
-        => throw new NotImplementedException();
-
-    public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
-        => throw new NotImplementedException();
-
-    public Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default)
-        => throw new NotImplementedException();
 }

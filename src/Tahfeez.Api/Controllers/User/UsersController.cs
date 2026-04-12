@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Tahfeez.Application.Features.User.Commands.CreateUser;
 using Tahfeez.Application.Features.User.Commands.DeleteUser;
 using Tahfeez.Application.Features.User.Commands.UpdateUser;
 using Tahfeez.Application.Features.User.DTOs;
@@ -58,5 +59,15 @@ public class UsersController : ControllerBase
             return NotFound(result.Error);
 
         return Ok(result);
+    }
+
+    [Authorize(Roles = Roles.Admin)]
+    [HttpPost]
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserDto userDto)
+    {
+        var result = await _mediator.Send(new CreateUserCommand(userDto));
+
+        if (result.IsFailure) return BadRequest(result.Error);
+        return CreatedAtAction(nameof(GetUserById), new { id = result.Value }, result);
     }
 }
