@@ -1,4 +1,6 @@
 using FluentValidation;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Validation.AspNetCore;
 using Serilog;
@@ -6,8 +8,12 @@ using Tahfeez.Api.Extentions;
 using Tahfeez.Application;
 using Tahfeez.Application.Features.Auth.Validators.Register;
 using Tahfeez.Infrastracture;
+using Tahfeez.Infrastracture.BackgroundJobs;
 using Tahfeez.Infrastracture.Persistence;
 using Tahfeez.Infrastracture.Persistence.Seeders;
+using Tahfeez.Api.Middleware;
+using Scalar.AspNetCore;
+using Microsoft.OpenApi;
 
 // Bootstrap logger for startup errors (before config/DI is built)
 Log.Logger = new LoggerConfiguration()
@@ -44,15 +50,56 @@ try
     // Register Application (MediatR)
     builder.Services.AddApplication();
 
+    // Register Hangfire with PostgreSQL storage
+    builder.Services.AddHangfire(config => config
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UsePostgreSqlStorage(opts =>
+            opts.UseNpgsqlConnection(connectionString)
+            )
+        );
+
+    builder.Services.AddHangfireServer();
+    builder.Services.AddScoped<BadgeCalculationJob>();
+
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-    builder.Services.AddOpenApi();
+    builder.Services.AddOpenApi("v1");
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "Tahfeez API",
+            Version = "v1"
+        });
+
+        var bearerScheme = new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Enter JWT token as: Bearer {your token}"
+        };
+
+        options.AddSecurityDefinition("Bearer", bearerScheme);
+
+        options.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
+        {
+            [new OpenApiSecuritySchemeReference("Bearer")] = []
+        });
+    });
 
     // add Default Authentication Scheme
     builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
-    });
+    }).AddBearerToken();
+
+    // Global exception handler (RFC 7807 ProblemDetails)
+    builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+    builder.Services.AddProblemDetails();
 
     builder.Services.AddControllers().AddNewtonsoftJson();
 
@@ -67,18 +114,44 @@ try
     var seeder = app.Services.GetRequiredService<DatabaseSeeder>();
     await seeder.SeedAsync();
 
-    if (app.Environment.IsDevelopment())
+    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
     {
-        app.MapOpenApi();
-    }
+        options.RoutePrefix = "swagger";
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Tahfeez API v1");
+    });
 
     // Log every HTTP request/response
+    app.UseExceptionHandler();
     app.UseSerilogRequestLogging();
 
     app.UseAuthentication();
+    app.UseMiddleware<Tahfeez.Api.Middleware.PendingUserMiddleware>();
     app.UseAuthorization();
 
+    app.MapScalarApiReference(options =>
+    {
+        options
+            .WithTitle("Tahfeez API")
+            .WithTheme(ScalarTheme.Moon)
+            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
+            .WithOpenApiRoutePattern("/openapi/v1.json");
+    });
+
     app.MapControllers();
+
+    // Hangfire dashboard (Admin only in production)
+    app.UseHangfireDashboard("/hangfire", new DashboardOptions
+    {
+        Authorization = [new HangfireDashboardAuthFilter(app.Environment)]
+    });
+
+    // Schedule the monthly badge calculation job (1st of every month at 02:00 UTC)
+    RecurringJob.AddOrUpdate<BadgeCalculationJob>(
+        "monthly-badge-calculation",
+        job => job.ExecuteAsync(),
+        "0 2 1 * *");  // cron: 02:00 on the 1st of each month
 
     app.Run();
 }

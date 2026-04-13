@@ -56,7 +56,7 @@ public class UsersController : ControllerBase
         var result = await _mediator.Send(new UpdateUserCommand(id, userDto));
 
         if(result.IsFailure)
-            return NotFound(result.Error);
+            return NotFound(result);
 
         return Ok(result);
     }
@@ -67,7 +67,7 @@ public class UsersController : ControllerBase
     {
         var result = await _mediator.Send(new CreateUserCommand(userDto));
 
-        if (result.IsFailure) return BadRequest(result.Error);
+        if (result.IsFailure) return BadRequest(result);
         return CreatedAtAction(nameof(GetUserById), new { id = result.Value }, result);
     }
 }

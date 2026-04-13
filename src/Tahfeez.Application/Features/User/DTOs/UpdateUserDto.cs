@@ -5,8 +5,9 @@ namespace Tahfeez.Application.Features.User.DTOs
 {
     public record UpdateUserDto
     (
-        string? userName,
-        string? email,
-        UserRole? role
+        string? UserName,
+        string? Email,
+        bool? IsActive,
+        UserRole? Role
     );
 }

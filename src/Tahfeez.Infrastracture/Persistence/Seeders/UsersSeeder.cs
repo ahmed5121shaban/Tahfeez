@@ -26,6 +26,7 @@ public class UsersSeeder
     {
         const string adminEmail = "admin@tahfeez.com";
         const string adminPassword = "Admin@123456";
+        const string adminFullName = "Admin User";
 
         var existing = await _userManager.FindByEmailAsync(adminEmail);
         if (existing is not null)
@@ -37,6 +38,7 @@ public class UsersSeeder
         var admin = new User
         {
             Id = Guid.NewGuid(),
+            FullName = adminFullName,
             UserName = adminEmail,
             NormalizedUserName = adminEmail.ToUpperInvariant(),
             Email = adminEmail,

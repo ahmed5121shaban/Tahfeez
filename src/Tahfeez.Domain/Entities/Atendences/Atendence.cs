@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Tahfeez.Domain.Entities.Users;
+using Tahfeez.Domain.Enums;
 using Tahfeez.SharedKernal.Common;
 
-namespace Tahfeez.Domain.Entities.Atendences
+namespace Tahfeez.Domain.Entities.Atendences;
+
+public class Atendence : AuditableEntity
 {
-    public class Atendence : AuditableEntity
-    {
-        public DateTime Date { get; set; }
-        public string Status { get; set; }
-        public Guid UserId { get; set; }
-        public User User { get; set; }
-    }
+    public DateOnly Date { get; set; }
+    public AttendanceStatus Status { get; set; }
+
+    public Guid UserId { get; set; }
+    public User User { get; set; } = default!;
+
+    /// <summary>Optional notes from the teacher/supervisor</summary>
+    public string? Notes { get; set; }
 }

@@ -7,6 +7,7 @@ namespace Tahfeez.Application.Features.User.DTOs
         string UserName,
         string Email,
         string Password,
-        UserRole Role
+        UserRole Role,
+        bool IsActive
     );
 }

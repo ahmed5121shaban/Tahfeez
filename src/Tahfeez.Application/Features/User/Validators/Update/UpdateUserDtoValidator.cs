@@ -10,9 +10,9 @@ namespace Tahfeez.Application.Features.User.Validators.Update
     {
         public UpdateUserDtoValidator()
         {
-            RuleFor(u => u.userName).MinimumLength(3);
-            RuleFor(u => u.email).EmailAddress();
-            RuleFor(u => u.role).IsInEnum();
+            RuleFor(u => u.UserName).MinimumLength(3);
+            RuleFor(u => u.Email).EmailAddress();
+            RuleFor(u => u.Role).IsInEnum();
         }
     }
 }

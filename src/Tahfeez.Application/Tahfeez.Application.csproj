@@ -22,8 +22,7 @@
     <Folder Include="Features\Auth\DTOs\" />
     <Folder Include="Features\Auth\Queries\" />
     <Folder Include="Features\Auth\Validators\Login\" />
-    <Folder Include="Interfaces\Auth\" />
-    <Folder Include="Interfaces\User\" />
+    <Folder Include="Features\Role\Queries\" />
   </ItemGroup>
 
 </Project>

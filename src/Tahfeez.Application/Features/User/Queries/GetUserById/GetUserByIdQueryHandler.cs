@@ -20,7 +20,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
         if (user is null)
             return Result.Failure<UserDto>($"User with id '{request.UserId}' was not found.");
 
-        var dto = new UserDto(user.Id, FullName: user.UserName, Email: user.Email, user.CreatedAt, user.UpdatedAt);
+        var dto = new UserDto(user.Id, user.FullName, user.Email, user.CreatedAt, user.UpdatedAt, user.Status);
         return Result.Success(dto);
     }
 }
