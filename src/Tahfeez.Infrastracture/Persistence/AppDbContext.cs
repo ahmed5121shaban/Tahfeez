@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict.EntityFrameworkCore.Models;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Tahfeez.Domain.Entities.Atendences;
 using Tahfeez.Domain.Entities.Badges;
 using Tahfeez.Domain.Entities.Classes;
@@ -39,7 +41,35 @@ public class AppDbContext : IdentityDbContext<User, Role, Guid>
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.HasCharSet(CharSet.Utf8Mb4, DelegationModes.ApplyToColumns);
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.Property(u => u.UserName).HasMaxLength(191);
+            entity.Property(u => u.NormalizedUserName).HasMaxLength(191);
+            entity.Property(u => u.Email).HasMaxLength(191);
+            entity.Property(u => u.NormalizedEmail).HasMaxLength(191);
+        });
+
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.Property(r => r.Name).HasMaxLength(191);
+            entity.Property(r => r.NormalizedName).HasMaxLength(191);
+        });
+
+        // OpenIddict - fix composite index key length
+        modelBuilder.Entity<OpenIddictEntityFrameworkCoreAuthorization>(entity =>
+        {
+            entity.Property(a => a.Subject).HasMaxLength(200); // was 400
+        });
+
+        modelBuilder.Entity<OpenIddictEntityFrameworkCoreToken>(entity =>
+        {
+            entity.Property(t => t.Subject).HasMaxLength(200); // was 400
+        });
+
         // Apply all IEntityTypeConfiguration<T> from this assembly
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
     }
 }

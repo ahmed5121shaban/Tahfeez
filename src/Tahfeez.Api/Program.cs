@@ -1,6 +1,5 @@
 using FluentValidation;
 using Hangfire;
-using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Validation.AspNetCore;
 using Serilog;
@@ -13,7 +12,7 @@ using Tahfeez.Infrastracture.Persistence;
 using Tahfeez.Infrastracture.Persistence.Seeders;
 using Tahfeez.Api.Middleware;
 using Scalar.AspNetCore;
-using Microsoft.OpenApi;
+using Hangfire.MySql;
 
 // Bootstrap logger for startup errors (before config/DI is built)
 Log.Logger = new LoggerConfiguration()
@@ -50,45 +49,26 @@ try
     // Register Application (MediatR)
     builder.Services.AddApplication();
 
-    // Register Hangfire with PostgreSQL storage
+    // Register Hangfire with MySQL storage
     builder.Services.AddHangfire(config => config
         .UseSimpleAssemblyNameTypeSerializer()
         .UseRecommendedSerializerSettings()
-        .UsePostgreSqlStorage(opts =>
-            opts.UseNpgsqlConnection(connectionString)
-            )
-        );
+        .UseStorage(new MySqlStorage(
+            connectionString,
+            new MySqlStorageOptions
+            {
+                TablesPrefix = "Hangfire",
+                TransactionIsolationLevel = (System.Transactions.IsolationLevel?)System.Data.IsolationLevel.ReadCommitted
+            }
+        ))
+    );
 
     builder.Services.AddHangfireServer();
     builder.Services.AddScoped<BadgeCalculationJob>();
 
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi("v1");
-    builder.Services.AddSwaggerGen(options =>
-    {
-        options.SwaggerDoc("v1", new OpenApiInfo
-        {
-            Title = "Tahfeez API",
-            Version = "v1"
-        });
-
-        var bearerScheme = new OpenApiSecurityScheme
-        {
-            Name = "Authorization",
-            Type = SecuritySchemeType.Http,
-            Scheme = "bearer",
-            BearerFormat = "JWT",
-            In = ParameterLocation.Header,
-            Description = "Enter JWT token as: Bearer {your token}"
-        };
-
-        options.AddSecurityDefinition("Bearer", bearerScheme);
-
-        options.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
-        {
-            [new OpenApiSecuritySchemeReference("Bearer")] = []
-        });
-    });
+    builder.Services.AddSwaggerConfig();
 
     // add Default Authentication Scheme
     builder.Services.AddAuthentication(options =>
@@ -127,7 +107,7 @@ try
     app.UseSerilogRequestLogging();
 
     app.UseAuthentication();
-    app.UseMiddleware<Tahfeez.Api.Middleware.PendingUserMiddleware>();
+    app.UseMiddleware<PendingUserMiddleware>();
     app.UseAuthorization();
 
     app.MapScalarApiReference(options =>

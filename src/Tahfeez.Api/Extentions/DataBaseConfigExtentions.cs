@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Tahfeez.Infrastracture.Persistence;
 using Tahfeez.Infrastracture.Persistence.Interceptors;
 
@@ -10,7 +11,8 @@ public static class DataBaseConfigExtentions
     {
         builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
         {
-            options.UseNpgsql(connectionString);
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
             options.UseOpenIddict();
 
             // Inject the scoped audit interceptor
